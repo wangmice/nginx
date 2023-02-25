@@ -582,6 +582,29 @@ Currently file AIO is supported on FreeBSD 4.3+ and Linux 2.6.22+ only
 END
         exit 1
     fi
+
+else
+
+    ngx_feature="eventfd()"
+    ngx_feature_name="NGX_HAVE_EVENTFD"
+    ngx_feature_run=no
+    ngx_feature_incs="#include <sys/eventfd.h>"
+    ngx_feature_path=
+    ngx_feature_libs=
+    ngx_feature_test="(void) eventfd(0, 0)"
+    . auto/feature
+
+    if [ $ngx_found = yes ]; then
+        have=NGX_HAVE_SYS_EVENTFD_H . auto/have
+    fi
+
+    if [ $ngx_found = no ]; then
+
+        ngx_feature="eventfd() (SYS_eventfd)"
+        ngx_feature_incs="#include <sys/syscall.h>"
+        ngx_feature_test="int n = SYS_eventfd"
+        . auto/feature
+    fi
 fi
 
 
@@ -805,7 +828,7 @@ ngx_feature_test="void *p; p = memalign(4096, 4096);
 
 ngx_feature="mmap(MAP_ANON|MAP_SHARED)"
 ngx_feature_name="NGX_HAVE_MAP_ANON"
-ngx_feature_run=yes
+ngx_feature_run=no
 ngx_feature_incs="#include <sys/mman.h>"
 ngx_feature_path=
 ngx_feature_libs=
@@ -818,7 +841,7 @@ ngx_feature_test="void *p;
 
 ngx_feature='mmap("/dev/zero", MAP_SHARED)'
 ngx_feature_name="NGX_HAVE_MAP_DEVZERO"
-ngx_feature_run=yes
+ngx_feature_run=no
 ngx_feature_incs="#include <sys/mman.h>
                   #include <sys/stat.h>
                   #include <fcntl.h>"
@@ -833,7 +856,7 @@ ngx_feature_test='void *p; int  fd;
 
 ngx_feature="System V shared memory"
 ngx_feature_name="NGX_HAVE_SYSVSHM"
-ngx_feature_run=yes
+ngx_feature_run=no
 ngx_feature_incs="#include <sys/ipc.h>
                   #include <sys/shm.h>"
 ngx_feature_path=
@@ -847,7 +870,7 @@ ngx_feature_test="int  id;
 
 ngx_feature="POSIX semaphores"
 ngx_feature_name="NGX_HAVE_POSIX_SEM"
-ngx_feature_run=yes
+ngx_feature_run=no
 ngx_feature_incs="#include <semaphore.h>"
 ngx_feature_path=
 ngx_feature_libs=

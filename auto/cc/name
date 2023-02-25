@@ -7,7 +7,7 @@ if [ "$NGX_PLATFORM" != win32 ]; then
 
     ngx_feature="C compiler"
     ngx_feature_name=
-    ngx_feature_run=yes
+    ngx_feature_run=
     ngx_feature_incs=
     ngx_feature_path=
     ngx_feature_libs=
@@ -23,7 +23,7 @@ if [ "$NGX_PLATFORM" != win32 ]; then
 
 fi
 
-
+export LANG=C
 if [ "$CC" = cl ]; then
     NGX_CC_NAME=msvc
     echo " + using Microsoft Visual C++ compiler"
@@ -40,7 +40,7 @@ elif `$CC -V 2>&1 | grep '^Intel(R) C' >/dev/null 2>&1`; then
     NGX_CC_NAME=icc
     echo " + using Intel C++ compiler"
 
-elif `$CC -v 2>&1 | grep 'gcc version' >/dev/null 2>&1`; then
+elif `LANG=C $CC -v 2>&1 | grep 'gcc version' >/dev/null 2>&1`; then
     NGX_CC_NAME=gcc
     echo " + using GNU C compiler"
 
